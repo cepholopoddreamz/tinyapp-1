@@ -13,6 +13,16 @@ app.set("view engine", "ejs");
 app.use(express.static('public'));
 app.use(cookieParser())
 
+// objects
+
+var urlDatabase = {
+  b2xVn2: "http://www.senselab.ca",
+  hsm5xK: "http://www.google.com"
+};
+
+//
+
+
 app.get("/", (req, res) => {
   res.send("A is for Apple");
 });
@@ -20,6 +30,10 @@ app.get("/", (req, res) => {
 app.get("/urls", (req,res) => {
   res.render("urls");
 
+});
+
+app.get("/partials", (req, res) => {
+  res.render("partials/_head");
 });
 
 
