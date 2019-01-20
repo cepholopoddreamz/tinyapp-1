@@ -76,6 +76,12 @@ app.post("/u/:shortURL/delete", (req,res) => {
   
 });
 
+app.post("/u/:shortURL/update", (req,res) => {
+  urlDatabase[req.params.shortURL] = req.body.newLongUrl;
+  res.redirect('/urls');
+});
+
+
 app.get("/login", (req, res) => {
   //res.send('apples')
   res.render("login");

@@ -26,9 +26,14 @@
   <br>
     <div class="col-sm-8"><h4>ShortURLs</h4>
 
-    <p>ShortURL: <%= shortURL %> = <a href="http://<%= longURL %>"><%= longURL %></a></p>
-    
-    
+    <p><div class="alert alert-info" role="alert">ShortURL: <%= shortURL %> = <a href="http://<%= longURL %>"><%= longURL %></a></div></p>
+    <div class="alert alert-warning" role="alert">
+
+    <form method="POST" action="/u/<%= shortURL %>/update">
+<input type="text" name="newLongUrl" placeholder="<%= longURL %>">
+<button type="submit">shorten URLUpdate</button>
+</form></div>
+    <p><a href="/urls" class="badge badge-info">home page</a></p>
     </div>
     <div class="col-sm-4"></div>
   </div>
