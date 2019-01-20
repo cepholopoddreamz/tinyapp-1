@@ -43,19 +43,34 @@ app.post("/urls", (req, res) => {
   urlDatabase[randomindex] = req.body.longURL;
   //console.log(urlDatabase);
   console.log(req.body.longURL)
-  res.redirect('/urls/'+randomindex)
+  console.log(req.params.shortURL + 'apples')
+  res.redirect('/urls/' + randomindex);
+  //res.redirect('/urls/'+ randomindex)
+  //this isn't loading properly. it says it is undefined. temporarily i put it to without randomindex at least to know the data was being added to the urldatabase object. but a :shorturl page should also be available. 
+  //but i've redirected to it, but i have i rendered it? 
+
   //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
+  //this works because <form action="/urls" method="POST" -- around the input on the new page. it posts (does work with user input) to /urls and urls posts (does with with the user input) creating new key values in urlDatabase
 });
 
 app.get("/urls/new", (req, res) => {
   res.render("new");
 });
 
-app.get("/urls/:shortURL", (req, res) => {
+app.get("/login", (req, res) => {
+  //res.send('apples')
+  res.render("login");
+});
+
+app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
+  //this page isn't loading even when entered directly -- so the redirect alone isn't the issue. there's nothing here appreantly. why....
   console.log(req.params.shortURL)
   //this is printing a value but the get for the showing of the shortURL display page is not working
+
   res.redirect(longURL); 
+  //not the issue
+
   //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->and hopefully got added to urlDatabase as a key. that shortURL comes from the randomindex.... which was posted at app.post /url ---> urlDatabase[randomindex] = req.body.longURL;
 });
 
@@ -63,19 +78,17 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],  
-  }; 
+  };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
+
+
   //getting the long url that was entered and added to the database as the value accessed through the key urlDatabase[req.params.id]. request parameters from id accesses what was entered by the user on the 'new' page.
   //shortURL was generated as the key for the longURL, in the urlDatabase
   
-  res.render('urls_show', templateVars);
+  res.render('show', templateVars);
   console.log(templateVars.longURL);
+  //this renders to urls/id, using the ejs layout for show /// don't get them confused
 
 });
-
-
-
-
-
 
 
 function generateRandomString() {
