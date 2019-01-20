@@ -41,14 +41,11 @@ app.post("/urls", (req, res) => {
   console.log(req.body);  
   let randomindex = generateRandomString();
   urlDatabase[randomindex] = req.body.longURL;
-  console.log(urlDatabase);
+  //console.log(urlDatabase);
   console.log(req.body.longURL)
- 
   res.redirect('/urls/'+randomindex)
   //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
 });
-
-
 
 app.get("/urls/new", (req, res) => {
   res.render("new");
@@ -59,7 +56,20 @@ app.get("/urls/:shortURL", (req, res) => {
   console.log(req.params.shortURL)
   //this is printing a value but the get for the showing of the shortURL display page is not working
   res.redirect(longURL); 
-  //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->and hopefully got added to urlDatabase as a key. 
+  //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->and hopefully got added to urlDatabase as a key. that shortURL comes from the randomindex.... which was posted at app.post /url ---> urlDatabase[randomindex] = req.body.longURL;
+});
+
+app.get("/urls/:id", (req, res) => {
+  let templateVars = { 
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id],  
+  }; 
+  //getting the long url that was entered and added to the database as the value accessed through the key urlDatabase[req.params.id]. request parameters from id accesses what was entered by the user on the 'new' page.
+  //shortURL was generated as the key for the longURL, in the urlDatabase
+  
+  res.render('urls_show', templateVars);
+  console.log(templateVars.longURL);
+
 });
 
 
