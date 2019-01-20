@@ -20,7 +20,18 @@ var urlDatabase = {
   hsm5xK: "http://www.google.com"
 };
 
-//
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
 
 app.get("/", (req, res) => {
   res.send("A is for Apple");
@@ -31,6 +42,8 @@ app.get("/partials", (req, res) => {
 }); 
 
 app.get("/urls", (req,res) => {
+  //let userId = req.cookies.userId;
+
   let templateVars = { 
     listing: urlDatabase,
   };
@@ -55,6 +68,12 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   res.render("new");
+});
+
+app.post("/u/:shortURL/delete", (req,res) => {
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls');
+  
 });
 
 app.get("/login", (req, res) => {
