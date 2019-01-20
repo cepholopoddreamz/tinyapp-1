@@ -19,6 +19,7 @@
   "homepage": "https://github.com/cepholopoddreamz/tinyapp-1#readme",
   "dependencies": {
     "body-parse": "^0.1.0",
+    "bootstrap": "^4.2.1",
     "cookie-parser": "^1.4.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4"
