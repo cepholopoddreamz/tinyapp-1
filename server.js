@@ -45,20 +45,24 @@ app.post("/urls", (req, res) => {
   console.log(req.body.longURL)
  
   res.redirect('/urls/'+randomindex)
+  //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
 });
 
 
 
 app.get("/urls/new", (req, res) => {
- 
   res.render("new");
 });
 
-app.get("/u/:shortURL", (req, res) => {
+app.get("/urls/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
-  // console.log(req.params.shortURL)
-  res.redirect(longURL); /// it's not '/urls/'+ because you are going to the websit they've written
+  console.log(req.params.shortURL)
+  //this is printing a value but the get for the showing of the shortURL display page is not working
+  res.redirect(longURL); 
+  //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->and hopefully got added to urlDatabase as a key. 
 });
+
+
 
 
 
