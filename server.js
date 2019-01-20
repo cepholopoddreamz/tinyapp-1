@@ -17,6 +17,12 @@ app.get("/", (req, res) => {
   res.send("A is for Apple");
 });
 
+app.get("/urls", (req,res) => {
+  res.render("urls");
+
+});
+
+
 app.listen(PORT, () => {
   console.log(`listening on ${PORT}!`);
 });
