@@ -1,0 +1,29 @@
+{
+  "name": "tiny-app-rebuild",
+  "version": "1.0.0",
+  "description": "tiny app rebuild",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cepholopoddreamz/tinyapp-1.git"
+  },
+  "author": "leslie plumb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cepholopoddreamz/tinyapp-1/issues"
+  },
+  "homepage": "https://github.com/cepholopoddreamz/tinyapp-1#readme",
+  "dependencies": {
+    "body-parse": "^0.1.0",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
