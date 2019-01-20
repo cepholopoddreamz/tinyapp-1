@@ -1,12 +1,5 @@
 bugs to fix:
 
-weird error on urls page:
-Can\'t set headers after they are sent.
+weird error on urls page:// fixed
 
->>the internet says: HTTP uses a cycle that requires one response per request. When the client sends a request (e.g. POST or GET) the server should only send one response back to it.
-
-This error message:
-
-Error: Can't set headers after they are sent.
-
-usually happens when you send several responses for one request. Make sure the following functions are called only once per request:
+new error: too many url redirects - undefined console log, after a url is entered on the 'new' page. it should go to a url/:shortURL page... 
