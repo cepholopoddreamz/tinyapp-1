@@ -35,8 +35,6 @@ app.get("/urls", (req,res) => {
   res.render("urls", templateVars);
 });
 
-
-
 // app.post("/urls", (req, res) => {
 //   console.log(req.body);
   
@@ -45,6 +43,12 @@ app.get("/urls", (req,res) => {
 app.get("/partials", (req, res) => {
   res.render("partials/_head");
 });
+
+app.get("/urls/new", (req, res) => {
+ 
+  res.render("new");
+});
+
 
 function generateRandomString() {
   var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
