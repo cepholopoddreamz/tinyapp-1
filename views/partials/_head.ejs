@@ -11,18 +11,21 @@
       <h2>tiNy app</h2>
     </div>
     <div class="col-6" >
-    
     </div>
     <div class="col-sm adjust">
-    <% if (userEmail !== undefined){ %>         
-          <p>hello <%= userEmail %></p>
-        <form action="/logout" method="POST" style="margin:10px;"><button type="submit" class="btn btn-outline-secondary btn-sm">Logout</button></form>
-       <% } else { %>
-          <p>hello stranger</p> 
-          <a href="login">login</a><a href="/urls/register">register</a>
-      <a href="login" type="button" class="btn btn-outline-info btn-sm">Login</a>
+    <% if (typeof user !== "undefined"){ %>    
+      <p>hello <%= user.email %></p>
+<a class="btn btn-info " href="/urls/new" role="button">
+Create Short URL</a>
+
+
+        <form action="/logout" method="POST" style="margin:10px;">
+        <button type="submit" class="btn btn-outline-secondary ">Logout</button>
+        </form>
+    <% } else { %>
+        <p>hello stranger</p> 
+        <a href="login" type="button" class="btn btn-outline-info btn-sm">Login</a>
       <% } %> 
-      
     </div>
   </div>
 </div>

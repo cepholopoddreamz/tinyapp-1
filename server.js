@@ -50,7 +50,8 @@ app.get("/urls", (req,res) => {
   //console.log(' user: ',userId)
   let templateVars = { 
     listing: urlDatabase,
-    userEmail: users[userId] ? users[userId].email : undefined
+    user: users[req.cookies.userId]
+    //this is the same as user undefined when you aren't logged in// you cant check if a value of an object // you can't check undefined
   };
   console.log(templateVars.listing)
   res.render("urls", templateVars);
@@ -70,8 +71,10 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined }
-  res.render("new");
+  let templateVars = { 
+    user: users[req.cookies.userId]
+  }
+  res.render("new", templateVars);
   console.log(userEmail);
   console.log(req.cookies.userId);
 
@@ -92,7 +95,9 @@ app.post("/urls/:shortURL/update", (req,res) => {
 
 
 app.get("/login", (req, res) => {
-  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined }
+  let templateVars = {
+    user: users[req.cookies.userId] 
+  }
   //console.log(userEmail);
   //console.log(req.cookies.userId);
   //res.send('apples')
@@ -127,7 +132,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
-    userEmail: users[req.cookies.userId] ? users[req.cookies.userId].email : undefined 
+    user: users[req.cookies.userId]
   };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
 
 
@@ -154,10 +159,10 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const generatedId = generateRandomString();
  
-    // if(req.body.email === undefined ||req.body.password === undefined){
-    //   console.log 'empty entry'
-    //   throw 404;
-    // }
+    if(req.body.email === '' ||req.body.password === ''){
+      console.log ('empty entry')
+      res.status(404);
+    }
   
   // req.body.email || req.body.password === undefined ?  throw 404 ;
 
@@ -166,7 +171,6 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: req.body.password
   }
-  userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined
 
   console.log(users);
   res.cookie('userId', generatedId);
