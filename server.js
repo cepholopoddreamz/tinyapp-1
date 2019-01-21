@@ -47,10 +47,12 @@ app.get("/urls", (req,res) => {
     res.redirect("/login")
     return
   }
+  //console.log(' user: ',userId)
   let templateVars = { 
     listing: urlDatabase,
-    userEmail: users[userId] ? users[userId].email : 'hello stranger'
+    userEmail: users[userId] ? users[userId].email : undefined
   };
+  console.log(templateVars.listing)
   res.render("urls", templateVars);
 });
 
@@ -68,25 +70,33 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : 'hello stranger' }
+  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined }
   res.render("new");
+  console.log(userEmail);
+  console.log(req.cookies.userId);
+
+  //userEmail: users[userId]
+  //serEmail: users[req.cookies.userId]
 });
 
-app.post("/u/:shortURL/delete", (req,res) => {
+app.post("/urls/:shortURL/delete", (req,res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
   
 });
 
-app.post("/u/:shortURL/update", (req,res) => {
+app.post("/urls/:shortURL/update", (req,res) => {
   urlDatabase[req.params.shortURL] = req.body.newLongUrl;
   res.redirect('/urls');
 });
 
 
 app.get("/login", (req, res) => {
+  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined }
+  //console.log(userEmail);
+  //console.log(req.cookies.userId);
   //res.send('apples')
-  res.render("login");
+  res.render("login", templateVars);
 });
 
 app.post("/login", (req, res) => {
@@ -117,7 +127,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
-    userEmail: users[req.cookies.userId] ? users[req.cookies.userId].email : 'hello stranger' 
+    userEmail: users[req.cookies.userId] ? users[req.cookies.userId].email : undefined 
   };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
 
 
@@ -143,11 +153,21 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const generatedId = generateRandomString();
+ 
+    // if(req.body.email === undefined ||req.body.password === undefined){
+    //   console.log 'empty entry'
+    //   throw 404;
+    // }
+  
+  // req.body.email || req.body.password === undefined ?  throw 404 ;
+
   users[generatedId] = {
     id: generatedId,
     email: req.body.email,
     password: req.body.password
   }
+  userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : undefined
+
   console.log(users);
   res.cookie('userId', generatedId);
   res.redirect('/urls');

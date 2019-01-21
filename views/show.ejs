@@ -20,7 +20,7 @@
     <p><div class="alert alert-info" role="alert">ShortURL: <%= shortURL %> = <a href="http://<%= longURL %>"><%= longURL %></a></div></p>
     <div class="alert alert-warning" role="alert">
 
-    <form method="POST" action="/u/<%= shortURL %>/update">
+    <form method="POST" action="/urls/<%= shortURL %>/update">
 <input type="text" name="newLongUrl" placeholder="<%= longURL %>">
 <button type="submit">shorten URLUpdate</button>
 </form></div>

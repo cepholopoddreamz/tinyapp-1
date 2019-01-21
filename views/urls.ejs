@@ -20,7 +20,7 @@
      <li class="list-group-item">
      <p><%= shortURL %> -- <%= listing[shortURL] %></p><a href="/urls/<%=shortURL%>" class="btn btn-outline-primary btn-sm" role="button">Edit</a>
      <p></p>
-     <form method="POST" action="/u/<%= shortURL %>/delete"><button type="submit" class="btn btn-outline-danger btn-sm">delete</button>
+     <form method="POST" action="/urls/<%= shortURL %>/delete"><button type="submit" class="btn btn-outline-danger btn-sm">delete</button>
      </form>
     <% } %></li>
     </ul>
