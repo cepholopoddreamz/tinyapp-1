@@ -24,3 +24,21 @@ registration page not rendering : (
 
   /// deleted this from main url page.... 
   <a href="/urls/new" type="button" class="btn btn-outline-info btn-sm">Create Short URL</a>
+
+  //USER EMAIL is NOT DefinED : (
+
+    something is not working. checked template vars but the input is there. console log also reports undefined. so clearly something is not connecting. 
+
+    in one spot it is defined as
+
+    userEmail: users[req.cookies.userId]
+    this is when it is checking for a stamp.... server has no memory, presence of a cookie, gives it a memory. 
+
+    userEmail: users[userId] ? users[userId].email : 'hello stranger'
+
+    this checks inside the userobject for the user Id, // is a conditional check for if user useridofspecificinstance is keyvalue and if so print the email value of that key. otherwise, 'hello stranger' /// this is for a different purpose... older purpose maybe. 
+    this retrieves values from the user object maybe. the cookie one... is to check for your stamp. if you've logged int. 
+
+    the req.params.shortURL is coming back undefined..... under the app.post. 
+
+    : <
