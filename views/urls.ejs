@@ -18,11 +18,14 @@
     <ul class="list-group list-group-flush">
     <% for (var shortURL in listing) { %>
      <li class="list-group-item">
-     <p><%= shortURL %> -- <%= listing[shortURL] %></p>
+     <p><%= shortURL %> -- <%= listing[shortURL] %></p><a href="/urls/<%=shortURL%>" class="btn btn-outline-primary btn-sm" role="button">Edit</a>
+     <p></p>
+     <form method="POST" action="/u/<%= shortURL %>/delete"><button type="submit" class="btn btn-outline-danger btn-sm">delete</button>
+     </form>
     <% } %></li>
     </ul>
     </div>
-    <div class="col-sm-4"><a href="/urls/new" type="button" class="btn btn-outline-info btn-sm">Create Short URL</a></div>
+    <div class="col-sm-4"></div>
   </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

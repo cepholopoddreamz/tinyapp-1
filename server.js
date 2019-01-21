@@ -132,8 +132,25 @@ app.get("/urls/:id", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie('userId');
+  console.log('userId' + 'loggingout')
   res.redirect('/login')
 
+});
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+app.post("/register", (req, res) => {
+  const generatedId = generateRandomString();
+  users[generatedId] = {
+    id: generatedId,
+    email: req.body.email,
+    password: req.body.password
+  }
+  console.log(users);
+  res.cookie('userId', generatedId);
+  res.redirect('/urls');
 });
 
 
