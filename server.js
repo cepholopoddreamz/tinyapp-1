@@ -17,8 +17,18 @@ app.use(cookieParser())
 // objects
 
 var urlDatabase = {
-  b2xVn2: "http://www.senselab.ca",
-  hsm5xK: "http://www.google.com"
+
+  b2xVn2: { 
+  shortURL: "b2xVn2", 
+  longURL: "http://www.senselab.ca",
+  userId: "userRandomID"
+  },
+
+  hsm5xK: {  // keys in javascript need quotes around it if it starts with a number
+    shortURL: "hsm5xK",
+    longURL: "http://www.google.com",
+    userId: "user2RandomID"
+  } 
 };
 
 const users = { 
@@ -26,14 +36,14 @@ const users = {
     id: "userRandomID", 
     email: "user@example.com", 
     password: "purple-monkey-dinosaur"
-    hashedPassword = bcrypt.hashSync("purple-monkey-dinosaur", 10);
+    hashedPassword : bcrypt.hashSync("purple-monkey-dinosaur", 10)
     
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
     password: "dishwasher-funk",
-    hashedPassword = bcrypt.hashSync("dishwasher-funk",10);
+    hashedPassword : bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
 
@@ -47,28 +57,77 @@ app.get("/partials", (req, res) => {
 
 app.get("/urls", (req,res) => {
   let userId = req.cookies.userId;
+  //const userId = req.cookies.userId
   // if(users[userId] === undefined){
   //   res.redirect("/login")
   //   return
   // }
   //console.log(' user: ',userId)
+  //const userId = req.cookies.userId
+
   let templateVars = { 
-    listing: urlDatabase,
-    user: users[req.cookies.userId]
+    //communicating the filtered ersion of urlDatabase or the currently loggedin User
+
+    listing: urlsForUser(userId),
+    //>>>>
+    user: users[req.cookies.userId]  
+
+    
+    // this can be refactored for userId... 
+
     //this is the same as user undefined when you aren't logged in// you cant check if a value of an object // you can't check undefined
   };
   console.log(templateVars.listing)
   res.render("urls", templateVars);
 });
 
+function addnewURL (shortURL2, longURL2, userId2){
+
+  // b2xVn2: { 
+  //   shortURL: "b2xVn2", 
+  //   longURL: "http://www.senselab.ca",
+  //   userId: "userRandomID"
+
+  urlDatabase[shortURL2] = { //need to assign an object to this. 
+  shortURL: shortURL2,
+  longURL: longURL2,
+  userId: userId2
+  /// the part on the right hand side these 
+  }
+}
+
+function urlsForUser(id) {
+  const filteredUrls = {};
+  for (const shortURL in urlDatabase){
+    const urlObj = urlDatabase[shortURL];
+
+    if (urlObj.userId === id) {
+      //url belongs to that user
+      //urlObj needs to be part of the filteredUrls object
+      //adding the empty object we just created
+      filteredUrls[shortURL]= urlObj;
+    }
+  }
+  return filteredUrls;
+}
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  
   let randomindex = generateRandomString();
   urlDatabase[randomindex] = req.body.longURL;
+
+const longURL = req.body.longURL;
+const shortURL = generateRandomString();
+const userId = req.cookies['userId']
+///////wrong bracesssssss
+
+addnewURL(shortURL, longURL, userId);
+
   //console.log(urlDatabase);
   console.log(req.body.longURL)
   console.log(req.params.shortURL + 'apples')
   res.redirect('/urls/' + randomindex);
+  //res.redirect(`/urls/${shortURL}`);
   
   //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
   //this works because <form action="/urls" method="POST" -- around the input on the new page. it posts (does work with user input) to /urls and urls posts (does with with the user input) creating new key values in urlDatabase
@@ -167,18 +226,12 @@ app.post("/register", (req, res) => {
       console.log ('empty entry')
       res.status(404);
     }
-  
-  // req.body.email || req.body.password === undefined ?  throw 404 ;
-
-  // const bcrypt = require('bcrypt');
-  // const hashedPassword = bcrypt.hashSync(password, 10);
-
 
   users[generatedId] = {
     id: generatedId,
     email: req.body.email,
     password: req.body.password,
-    hashedPassword: bcrypt.hashSync(req.body.password, 10);
+    hashedPassword: bcrypt.hashSync(req.body.password, 10)
   }
 
   console.log(users);
