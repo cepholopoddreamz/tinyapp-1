@@ -13,3 +13,5 @@ realized that "/u/:shortURL" is not interchangeable with /urls/:shortURL/
 i don't really know why.... but when i put it back to /u/ it could now find the page. ask the teacher why.... 
 
 //another minor bug. the update form button on the shorturls page --- it wasn't routing correctly. at first i changed it to /u/ addresses like before, but this time it was because the ----form method="POST" ---- was placed after the action="/u/<%= shortURL %>/update"  // by changing this so that the method was in front of the action, the action knew what method to use, presumably. 
+
+// continued problem with add new URL page. if i try to add the header file, it breaks the page -  and bootstrap keeps the url add from redirecting to the right page - the show page.
