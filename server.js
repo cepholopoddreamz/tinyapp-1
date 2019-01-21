@@ -130,6 +130,12 @@ app.get("/urls/:id", (req, res) => {
 
 });
 
+app.post("/logout", (req, res) => {
+  res.clearCookie('userId');
+  res.redirect('/login')
+
+});
+
 
 function generateRandomString() {
   var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
