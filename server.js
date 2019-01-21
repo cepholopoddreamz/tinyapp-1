@@ -1,4 +1,5 @@
 var express = require("express");
+const bcrypt = require('bcrypt');
 var app = express();
 var PORT = 3000; // default port 8080
 let login = false;
@@ -25,11 +26,14 @@ const users = {
     id: "userRandomID", 
     email: "user@example.com", 
     password: "purple-monkey-dinosaur"
+    hashedPassword = bcrypt.hashSync("purple-monkey-dinosaur", 10);
+    
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "dishwasher-funk"
+    password: "dishwasher-funk",
+    hashedPassword = bcrypt.hashSync("dishwasher-funk",10);
   }
 }
 
@@ -43,10 +47,10 @@ app.get("/partials", (req, res) => {
 
 app.get("/urls", (req,res) => {
   let userId = req.cookies.userId;
-  if(users[userId] === undefined){
-    res.redirect("/login")
-    return
-  }
+  // if(users[userId] === undefined){
+  //   res.redirect("/login")
+  //   return
+  // }
   //console.log(' user: ',userId)
   let templateVars = { 
     listing: urlDatabase,
@@ -166,10 +170,15 @@ app.post("/register", (req, res) => {
   
   // req.body.email || req.body.password === undefined ?  throw 404 ;
 
+  // const bcrypt = require('bcrypt');
+  // const hashedPassword = bcrypt.hashSync(password, 10);
+
+
   users[generatedId] = {
     id: generatedId,
     email: req.body.email,
-    password: req.body.password
+    password: req.body.password,
+    hashedPassword: bcrypt.hashSync(req.body.password, 10);
   }
 
   console.log(users);
