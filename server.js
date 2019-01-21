@@ -42,10 +42,14 @@ app.get("/partials", (req, res) => {
 }); 
 
 app.get("/urls", (req,res) => {
-  //let userId = req.cookies.userId;
-
+  let userId = req.cookies.userId;
+  if(users[userId] === undefined){
+    res.redirect("/login")
+    return
+  }
   let templateVars = { 
     listing: urlDatabase,
+    userEmail: users[userId] ? users[userId].email : 'hello stranger'
   };
   res.render("urls", templateVars);
 });
@@ -58,15 +62,13 @@ app.post("/urls", (req, res) => {
   console.log(req.body.longURL)
   console.log(req.params.shortURL + 'apples')
   res.redirect('/urls/' + randomindex);
-  //res.redirect('/urls/'+ randomindex)
-  //this isn't loading properly. it says it is undefined. temporarily i put it to without randomindex at least to know the data was being added to the urldatabase object. but a :shorturl page should also be available. 
-  //but i've redirected to it, but i have i rendered it? 
-
+  
   //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
   //this works because <form action="/urls" method="POST" -- around the input on the new page. it posts (does work with user input) to /urls and urls posts (does with with the user input) creating new key values in urlDatabase
 });
 
 app.get("/urls/new", (req, res) => {
+  let templateVars = { userEmail: users[req.cookies.userId] ?  users[req.cookies.userId].email : 'hello stranger' }
   res.render("new");
 });
 
@@ -87,6 +89,18 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+app.post("/login", (req, res) => {
+  let foundUser;
+  for(var id in users){
+    if(users[id].email === req.body.email && users[id].password === req.body.password){
+      foundUser = users[id];
+      res.cookie('userId', foundUser.id);
+      break
+    }
+  }
+  res.redirect('/urls')
+});
+
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
   //this page isn't loading even when entered directly -- so the redirect alone isn't the issue. there's nothing here appreantly. why....
@@ -96,13 +110,14 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL); 
   //not the issue
 
-  //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->and hopefully got added to urlDatabase as a key. that shortURL comes from the randomindex.... which was posted at app.post /url ---> urlDatabase[randomindex] = req.body.longURL;
+  //this points to the new key value pair that was created in urlDatabase - with the url the user just entered. the console log of req.params.shortURL displays what  was entered -->
 });
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id],  
+    longURL: urlDatabase[req.params.id],
+    userEmail: users[req.cookies.userId] ? users[req.cookies.userId].email : 'hello stranger' 
   };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
 
 
