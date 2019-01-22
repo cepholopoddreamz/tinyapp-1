@@ -246,7 +246,12 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('userId');//clear session vs cookie
+  //res.clearCookie('userId');//clear session vs cookie
+  req.session = null;
+  //req.session.userId
+  //req.cookieSession
+
+
   console.log('userId' + 'loggingout')
   res.redirect('/login')
 
