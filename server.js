@@ -14,14 +14,11 @@ app.set("view engine", "ejs");
 
 app.use(express.static('public'));
 app.use(cookieParser())
-//app.use(cookieSession());
 
 app.use(cookieSession({
   name: 'session',
-  keys: ['adisjfojad121', 'asdh48u2'],
+  keys: ['adisjfojad121', 'asdh48u2']
 }))
-
-// objects
 
 var urlDatabase = {
 
@@ -31,7 +28,7 @@ var urlDatabase = {
   userId: "userRandomID"
   },
 
-  hsm5xK: {  // keys in javascript need quotes around it if it starts with a number
+  hsm5xK: {
     shortURL: "hsm5xK",
     longURL: "http://www.google.com",
     userId: "user2RandomID"
@@ -44,7 +41,6 @@ const users = {
     email: "user@example.com", 
     password: "apples",
     hashedPassword: bcrypt.hashSync("apples", 10)
-    
   },
  "user2RandomID": {
     id: "user2RandomID", 
@@ -53,8 +49,6 @@ const users = {
     hashedPassword: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
-
-//console.log(users);
 
 app.get("/", (req, res) => {
   res.send("A is for Apple");
@@ -68,18 +62,8 @@ app.get("/urls", (req,res) => {
   let userId = req.session.userId;
   console.log('appples', req.session);
   let templateVars = { 
-
-
     listing: urlsForUser(userId),
-    //>>>>
-    //user: users[req.cookies.userId]  
-    //user: users[req.cookies.userId]
-    
     user: users[req.session.userId]
-    
-    // this can be refactored for userId... 
-
-    //this is the same as user undefined when you aren't logged in// you cant check if a value of an object // you can't check undefined
   };
   console.log(templateVars.listing)
   res.render("urls", templateVars);
@@ -92,11 +76,11 @@ function addnewURL (shortURL2, longURL2, userId2){
   //   longURL: "http://www.senselab.ca",
   //   userId: "userRandomID"
 
-  urlDatabase[shortURL2] = { //need to assign an object to this. 
+  urlDatabase[shortURL2] = { 
   shortURL: shortURL2,
   longURL: longURL2,
   userId: userId2
-  /// the part on the right hand side these 
+  
   }
 }
 
@@ -116,15 +100,10 @@ function urlsForUser(id) {
 }
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  
-  
-  
-
+console.log(req.body);  
 const longURL = req.body.longURL;
 const shortURL = generateRandomString();
 const userId = req.session['userId']
-///////wrong bracesssssss
-
 addnewURL(shortURL, longURL, userId);
 
   //console.log(urlDatabase);
@@ -159,7 +138,6 @@ app.get("/urls/new", (req, res) => {
 app.post("/urls/:shortURL/delete", (req,res) => {
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
-  
 });
 
 
@@ -172,7 +150,6 @@ app.post("/urls/:shortURL/delete", (req,res) => {
 //   },
 
 app.post("/urls/:shortURL/update", (req,res) => {
-  
   urlDatabase[req.params.shortURL].longURL = req.body.newLongUrl;
   res.redirect('/urls');
 });
@@ -184,8 +161,6 @@ app.get("/login", (req, res) => {
   }
   console.log('req.session', req.session);
   console.log(req.session.userId);
-  //console.log(req.cookies.userId);
-  //res.send('apples')
   res.render("login", templateVars);
 });
 
@@ -193,31 +168,24 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   let foundUser;
-
-
-
-  //bcrypt.compareSync(req.body.password, hashedPassword);
-
   for (var id in users) {
     if(users[id].email === req.body.email) {
       const foundUser = users[id];
       if(bcrypt.compareSync(req.body.password, foundUser.hashedPassword)){
         //res.cookie('userId', foundUser.id);
-        req.session.user_id = foundUser.id; 
-        res.redirect('/urls')
+        req.session.userId = foundUser.id; 
+        res.redirect('/urls');
         return
       }
       break;
     }
-
   }
- 
   res.render("login", { error: true})
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  console.log(urlDatabase[req.params.shortURL][longURL] + 'apples');
+  let longURL = urlDatabase[req.params.shortURL].longURL;
+  console.log(urlDatabase[req.params.shortURL].longURL + 'apples');
   //this page isn't loading even when entered directly -- so the redirect alone isn't the issue. there's nothing here appreantly. why....
   //console.log(req.params.shortURL)
   //this is printing a value but the get for the showing of the shortURL display page is not working
@@ -278,14 +246,9 @@ app.post("/register", (req, res) => {
   }
 
   console.log(users);
-  //res.cookie('userId', generatedId);
   req.session.userId = generatedId;
-  // specific syntax for cookie parser wants a name and then a 
-  req.session.userId = generatedId; 
   res.redirect('/urls');
 });
-
-// req.session
 
 
 function generateRandomString() {
