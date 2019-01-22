@@ -35,17 +35,19 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
-    hashedPassword : bcrypt.hashSync("purple-monkey-dinosaur", 10)
+    password: "purple-monkey-dinosaur",
+    hashedPassword: bcrypt.hashSync("purple-monkey-dinosaur", 10)
     
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
     password: "dishwasher-funk",
-    hashedPassword : bcrypt.hashSync("dishwasher-funk", 10)
+    hashedPassword: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
+
+console.log(users);
 
 app.get("/", (req, res) => {
   res.send("A is for Apple");
@@ -113,8 +115,8 @@ function urlsForUser(id) {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  
-  let randomindex = generateRandomString();
-  urlDatabase[randomindex] = req.body.longURL;
+  
+  
 
 const longURL = req.body.longURL;
 const shortURL = generateRandomString();
@@ -124,9 +126,9 @@ const userId = req.cookies['userId']
 addnewURL(shortURL, longURL, userId);
 
   //console.log(urlDatabase);
-  console.log(req.body.longURL)
-  console.log(req.params.shortURL + 'apples')
-  res.redirect('/urls/' + randomindex);
+  //console.log(req.body.longURL)
+  //console.log(req.params.shortURL + 'apples')
+  res.redirect('/urls/' + shortURL);
   //res.redirect(`/urls/${shortURL}`);
   
   //this is posting things entered on the 'new' page for creating shortURLs, with a random id attached
@@ -134,8 +136,15 @@ addnewURL(shortURL, longURL, userId);
 });
 
 app.get("/urls/new", (req, res) => {
+  const user = users[req.cookies.userId];
+  console.log(user);
+  if (!user) {
+    res.redirect("/login");
+    return
+  } 
+
   let templateVars = { 
-    user: users[req.cookies.userId]
+    user
   }
   res.render("new", templateVars);
   console.log(userEmail);
@@ -151,15 +160,25 @@ app.post("/urls/:shortURL/delete", (req,res) => {
   
 });
 
+
+// var urlDatabase = {
+
+//   b2xVn2: { 
+//   shortURL: "b2xVn2", 
+//   longURL: "http://www.senselab.ca",
+//   userId: "userRandomID"
+//   },
+
 app.post("/urls/:shortURL/update", (req,res) => {
-  urlDatabase[req.params.shortURL] = req.body.newLongUrl;
+  
+  urlDatabase[req.params.shortURL].longURL = req.body.newLongUrl;
   res.redirect('/urls');
 });
 
 
 app.get("/login", (req, res) => {
   let templateVars = {
-    user: users[req.cookies.userId] 
+    user: users[req.cookies.userId]
   }
   //console.log(userEmail);
   //console.log(req.cookies.userId);
@@ -169,20 +188,32 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   let foundUser;
-  for(var id in users){
-    if(users[id].email === req.body.email && users[id].password === req.body.password){
-      foundUser = users[id];
-      res.cookie('userId', foundUser.id);
-      break
+
+
+
+  //bcrypt.compareSync(req.body.password, hashedPassword);
+
+  for (var id in users) {
+    if(users[id].email === req.body.email) {
+      const foundUser = users[id];
+      if(bcrypt.compareSync(req.body.password, foundUser.hashedPassword)){
+        res.cookie('userId', foundUser.id);
+        res.redirect('/urls')
+        return
+      }
+      break;
     }
+
   }
-  res.redirect('/urls')
+ 
+  res.render("login", { error: true})
 });
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
+  console.log(urlDatabase[req.params.shortURL][longURL] + 'apples');
   //this page isn't loading even when entered directly -- so the redirect alone isn't the issue. there's nothing here appreantly. why....
-  console.log(req.params.shortURL)
+  //console.log(req.params.shortURL)
   //this is printing a value but the get for the showing of the shortURL display page is not working
 
   res.redirect(longURL); 
@@ -194,7 +225,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    longURL: urlDatabase[req.params.id].longURL,
     user: users[req.cookies.userId]
   };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
 
@@ -222,9 +253,10 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const generatedId = generateRandomString();
  
-    if(req.body.email === '' ||req.body.password === ''){
+    if(req.body.email === '' || req.body.password === ''){
       console.log ('empty entry')
       res.status(404);
+      res.render("register");
     }
 
   users[generatedId] = {
