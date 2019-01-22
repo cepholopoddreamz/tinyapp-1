@@ -1,8 +1,9 @@
 var express = require("express");
 const bcrypt = require('bcrypt');
 var app = express();
+var cookieSession = require('cookie-session')
 var PORT = 3000; // default port 8080
-let login = false;
+let  = false;
 let registration = false;
 
 var cookieParser = require('cookie-parser');
@@ -13,6 +14,12 @@ app.set("view engine", "ejs");
 
 app.use(express.static('public'));
 app.use(cookieParser())
+//app.use(cookieSession());
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['adisjfojad121', 'asdh48u2'],
+}))
 
 // objects
 
@@ -35,8 +42,8 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "purple-monkey-dinosaur",
-    hashedPassword: bcrypt.hashSync("purple-monkey-dinosaur", 10)
+    password: "apples",
+    hashedPassword: bcrypt.hashSync("apples", 10)
     
   },
  "user2RandomID": {
@@ -47,7 +54,7 @@ const users = {
   }
 }
 
-console.log(users);
+//console.log(users);
 
 app.get("/", (req, res) => {
   res.send("A is for Apple");
@@ -58,22 +65,17 @@ app.get("/partials", (req, res) => {
 }); 
 
 app.get("/urls", (req,res) => {
-  let userId = req.cookies.userId;
-  //const userId = req.cookies.userId
-  // if(users[userId] === undefined){
-  //   res.redirect("/login")
-  //   return
-  // }
-  //console.log(' user: ',userId)
-  //const userId = req.cookies.userId
-
+  let userId = req.session.userId;
+  console.log('appples', req.session);
   let templateVars = { 
-    //communicating the filtered ersion of urlDatabase or the currently loggedin User
+
 
     listing: urlsForUser(userId),
     //>>>>
-    user: users[req.cookies.userId]  
-
+    //user: users[req.cookies.userId]  
+    //user: users[req.cookies.userId]
+    
+    user: users[req.session.userId]
     
     // this can be refactored for userId... 
 
@@ -120,7 +122,7 @@ app.post("/urls", (req, res) => {
 
 const longURL = req.body.longURL;
 const shortURL = generateRandomString();
-const userId = req.cookies['userId']
+const userId = req.session['userId']
 ///////wrong bracesssssss
 
 addnewURL(shortURL, longURL, userId);
@@ -136,10 +138,10 @@ addnewURL(shortURL, longURL, userId);
 });
 
 app.get("/urls/new", (req, res) => {
-  const user = users[req.cookies.userId];
+  const user = users[req.session.userId];
   console.log(user);
   if (!user) {
-    res.redirect("/login");
+    res.redirect("/");
     return
   } 
 
@@ -148,7 +150,7 @@ app.get("/urls/new", (req, res) => {
   }
   res.render("new", templateVars);
   console.log(userEmail);
-  console.log(req.cookies.userId);
+  console.log(req.session.userId);
 
   //userEmail: users[userId]
   //serEmail: users[req.cookies.userId]
@@ -178,13 +180,16 @@ app.post("/urls/:shortURL/update", (req,res) => {
 
 app.get("/login", (req, res) => {
   let templateVars = {
-    user: users[req.cookies.userId]
+    user: users[req.session.userId]
   }
-  //console.log(userEmail);
+  console.log('req.session', req.session);
+  console.log(req.session.userId);
   //console.log(req.cookies.userId);
   //res.send('apples')
   res.render("login", templateVars);
 });
+
+
 
 app.post("/login", (req, res) => {
   let foundUser;
@@ -197,7 +202,8 @@ app.post("/login", (req, res) => {
     if(users[id].email === req.body.email) {
       const foundUser = users[id];
       if(bcrypt.compareSync(req.body.password, foundUser.hashedPassword)){
-        res.cookie('userId', foundUser.id);
+        //res.cookie('userId', foundUser.id);
+        req.session.user_id = foundUser.id; 
         res.redirect('/urls')
         return
       }
@@ -226,7 +232,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = { 
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
-    user: users[req.cookies.userId]
+    user: users[req.session.userId]
   };  //this template vars will export to the show page, so that if i write and JS there, it will have these object/values to work with 
 
 
@@ -240,7 +246,7 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('userId');
+  res.clearCookie('userId');//clear session vs cookie
   console.log('userId' + 'loggingout')
   res.redirect('/login')
 
@@ -267,9 +273,14 @@ app.post("/register", (req, res) => {
   }
 
   console.log(users);
-  res.cookie('userId', generatedId);
+  //res.cookie('userId', generatedId);
+  req.session.userId = generatedId;
+  // specific syntax for cookie parser wants a name and then a 
+  req.session.userId = generatedId; 
   res.redirect('/urls');
 });
+
+// req.session
 
 
 function generateRandomString() {
