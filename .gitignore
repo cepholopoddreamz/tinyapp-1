@@ -1,2 +1,9 @@
 .DS_Store
 /node_modules
+server-backup3
+server-backup3.js
+server-monday.js
+server-workingbeforedatabaserefactor.js
+views/urls-backup.ejs
+views/urls-backup4pm.ejs
+server-backup.js

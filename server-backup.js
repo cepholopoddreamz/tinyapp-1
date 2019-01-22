@@ -70,7 +70,7 @@ app.get("/urls", (req,res) => {
 
     urls: urlsForUser(userId)
     //>>>>
-    user: users[req.cookies.userId]  /// this was copied from the teacher. maybe the reference is not the same as what i'm using in my code. 
+    user: users[req.cookies.userId]  
     // this can be refactored for userId... 
 
     //this is the same as user undefined when you aren't logged in// you cant check if a value of an object // you can't check undefined
