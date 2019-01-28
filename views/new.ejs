@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Main Page</title>
+  <title>TiNy APp: Create New Short URL</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
@@ -12,12 +12,16 @@
 
 <div class="container">
   <div class="row">
+  <% if (typeof user !== "undefined"){ %>  
     <div class="col-sm-8">  
       <form action="/urls" method="POST"
     style="margin:150px;">
       <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px"><p></p><button type="submit" class="btn btn-secondary">Submit</button>
       </form>
+       <% } else { %>
+  <p>please <a href="/login">login</a> or <a href="/register">register</a> to view URLSs</p>
+<% } %> 
     </div>
     <div class="col-sm-4"></div>
   </div>

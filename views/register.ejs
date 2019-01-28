@@ -4,12 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Registration Page</title>
+  <title>TiNy APp: Registration Page</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 </head>
 <body>
-<% include ./partials/_headplain %>
-
+<% include ./partials/_head %>
+<% if (typeof user === 'undefined'){%>
+<p style="margin-left:15px"> Your email or passwords was empty. Please fill out the appropriate information to register </p>
+<%}%>
 <form action="/register" method="POST" style="margin:10px;">
   <div class="form-group">
     <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
