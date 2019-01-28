@@ -51,6 +51,7 @@ const users = {
 
 app.get("/", (req, res) => {
   res.send("A is for Apple");
+  res.redirect('/urls');
 });
 
 app.get("/partials", (req, res) => {
@@ -88,17 +89,30 @@ function urlsForUser(id) {
 app.post("/urls", (req, res) => {  
 const longURL = req.body.longURL;
 const shortURL = generateRandomString();
-const userId = req.session['userId']
+const userId = req.session['userId'];
+
+if (req.body.longURL !== undefined && req.body.longURL !== ''){
 addnewURL(shortURL, longURL, userId);
 res.redirect('/urls/' + shortURL);
+} else {
+  res.status(404);
+  res.send('your entry was empty. Please try again');
+}
 });
 
 app.get("/urls/new", (req, res) => {
   const user = users[req.session.userId];
-  if (!user) {
-    res.redirect("/");
-    return
-  } 
+  // if (!user) {
+  //   res.redirect("/login");
+  //   return
+  // } 
+  if(req.body.email === '' || req.body.password === ''){
+      
+    res.status(404);
+    res.send('your entry was empty. Please try again');
+  
+  }
+
 
   let templateVars = { 
     user
@@ -127,7 +141,7 @@ app.get("/login", (req, res) => {
 
 
 app.post("/login", (req, res) => {
-  let foundUser;
+  
   for (var id in users) {
     if(users[id].email === req.body.email) {
       const foundUser = users[id];
@@ -153,7 +167,13 @@ app.get("/urls/:id", (req, res) => {
     longURL: urlDatabase[req.params.id].longURL,
     user: users[req.session.userId]
   }; 
+  if (urlDatabase[req.params.id].longURL === '' || urlDatabase[req.params.id].longURL === undefined){
+    res.status(404);
+    res.send("You didn't enter anything. Please try again");
+  }
+  else {
   res.render('show', templateVars);
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -167,20 +187,33 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const generatedId = generateRandomString();
-    if(req.body.email === '' || req.body.password === ''){
-      
-      res.status(404);
-      res.render("register");
+  
+  if(req.body.email === '' || req.body.password === ''){
+    res.status(404);
+    res.send('your email or password was empty, please fill out the fields to register')
+    res.render("register");
+    } else {
+      for (var id in users) {
+        if(users[id].email === req.body.email) {
+          res.status(404);
+          res.send('this email id has already been registered. Please try another')
+          res.render("register");
+          break;
+        } else {
+        users[generatedId] = {
+        id: generatedId,
+        email: req.body.email,
+        password: req.body.password,
+        hashedPassword: bcrypt.hashSync(req.body.password, 10)
+        }
+      }
     }
-    users[generatedId] = {
-    id: generatedId,
-    email: req.body.email,
-    password: req.body.password,
-    hashedPassword: bcrypt.hashSync(req.body.password, 10)
+    req.session.userId = generatedId;
+    res.redirect('/urls');
   }
-  req.session.userId = generatedId;
-  res.redirect('/urls');
 });
+
+
 
 
 function generateRandomString() {
